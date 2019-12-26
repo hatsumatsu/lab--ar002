@@ -108,6 +108,8 @@ function start( container, marker, video, input_width, input_height, canvas_draw
         map: texture 
     } );
 
+    ARVideo.play();
+
 
     let ARObjectGeometry = new THREE.PlaneGeometry( 1, 1, 1, 1 );
     ARObject = new THREE.Mesh( ARObjectGeometry, material );
