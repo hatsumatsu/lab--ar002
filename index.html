@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>NFT Interpolated</title>
+ 
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="loading">
+    
+<!--
+==================
+STATS    
+==================
+-->
+    
+    <div id="stats" class="ui stats">    
+        
+        <div id="stats1" class="stats-item">
+            <p class="stats-item-title">
+                Main
+            </p>
+        </div>
+        
+        <div id="stats2" class="stats-item">
+            <p class="stats-item-title">
+                Worker
+            </p>
+        </div>
+        
+    </div>
+    
+<!--
+==================
+CAMERA VIDEO & CANVAS    
+==================
+-->    
+    
+    <div id="app">
+        <video 
+            loop 
+            autoplay 
+            muted 
+            playsinline 
+            id="video">
+        </video>
+        
+        <canvas id="canvas"></canvas>
+    </div>
+    
+    
+<!--
+==================
+VIDEO
+==================
+-->     
+    
+    <video 
+        loop 
+        autoplay 
+        muted 
+        playsinline 
+        id="arvideo">
+        <source type="video/mp4" src="video/video--01.mp4">
+    </video>
+
+
+    <a 
+        href="https://raw.githubusercontent.com/artoolkit/artoolkit5/master/doc/Marker%20images/pinball.jpg"
+        class="ui marker"
+        target="_blank">
+        🖼 Marker Image
+    </a>
+
+    
+    <script src="https://raw.githack.com/mrdoob/stats.js/master/build/stats.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/109/three.min.js"></script>
+    <script src="https://rawcdn.githack.com/kalwalt/jsartoolkit5/a8e567a1454f25d0df49b19bbba0e72cc51a8410/examples/nft_improved_worker_gltf/lib/GLTFLoader.js"></script>
+    <script src="js/app.js"></script>
+    
+    <script>
+        
+
+/**
+ * STATS
+ */
+let statsMain = new Stats();
+statsMain.showPanel( 0 ); // 0: fps, 1: ms, 2: mb, 3+: custom
+document.getElementById( 'stats1' ).appendChild( statsMain.dom );
+
+let statsWorker = new Stats();
+statsWorker.showPanel( 0 ); // 0: fps, 1: ms, 2: mb, 3+: custom
+document.getElementById( 'stats2' ).appendChild( statsWorker.dom );
+        
+        
+/**
+ * APP / ELEMENTS
+ */        
+let container = document.getElementById( 'app' );
+let video = document.getElementById( 'video' );
+let canvas = document.getElementById( 'canvas' );
+        
+
+/**
+ * APP / VIDEO STREAM
+ */               
+if( navigator.mediaDevices && navigator.mediaDevices.getUserMedia ) {
+    let hint = {
+        audio: false,
+        video: true
+    };
+
+    if( window.innerWidth < 800 ) {
+        let width = ( window.innerWidth < window.innerHeight ) ? 240 : 360;
+        let height = ( window.innerWidth < window.innerHeight ) ? 360 : 240;
+
+        let aspectRatio = window.innerWidth / window.innerHeight;
+
+        console.log( width, height );
+
+        hint = {
+            audio: false,
+            video: {
+                facingMode: 'environment',                
+                width: { min: width, max: width }
+            },
+        };
+
+        console.log( hint );        
+    }
+    
+    navigator.mediaDevices.getUserMedia( hint ).then( function( stream ) {
+        video.srcObject = stream;
+        video.addEventListener( 'loadedmetadata', () => {
+            video.play();
+
+            console.log( 'video', video, video.videoWidth, video.videoHeight );
+
+            start(
+                container, 
+                markers['pinball'], 
+                video, 
+                video.videoWidth, 
+                video.videoHeight, 
+                canvas, 
+                function() { 
+                    statsMain.update()
+                }, 
+                function() { 
+                    statsWorker.update();
+                },
+                null
+            );
+        } );
+    } );
+}
+
+    </script>    
+</body>
+</html>
